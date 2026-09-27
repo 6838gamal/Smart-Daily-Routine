@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="nav_finance">المالية</div>
+    <button class="btn btn-primary btn-sm" data-ar="إضافة معاملة" data-en="Add Transaction">إضافة معاملة</button>
+  </div>
+
+  <!-- Balance cards -->
+  <div class="grid grid-4 mb-4">
+    <div class="stat-card" style="background: linear-gradient(135deg, var(--primary-500), var(--primary-700)); color:#fff; border:none;">
+      <div class="stat-label" style="color:rgba(255,255,255,0.85);" data-i18n="balance">الرصيد</div>
+      <div class="stat-value" style="color:#fff;">{{ data.finance.balance|thousands_separator }} <span style="font-size:14px;" data-ar="{{ data.finance.currency }}" data-en="{{ data.finance.currency_en }}">{{ data.finance.currency }}</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <div class="stat-label" data-i18n="income">الدخل</div>
+      <div class="stat-value">{{ data.finance.income|thousands_separator }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon error"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div>
+      <div class="stat-label" data-i18n="expenses">المصروفات</div>
+      <div class="stat-value">{{ data.finance.expenses|thousands_separator }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon accent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="stat-label" data-i18n="savings">المدخرات</div>
+      <div class="stat-value">{{ data.finance.savings|thousands_separator }}</div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.finance.savings / data.finance.savings_goal * 100)|round }}"></div></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-4" style="grid-template-columns: 1fr 1fr;">
+    <!-- Income vs Expenses chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="الدخل مقابل المصروفات" data-en="Income vs Expenses">الدخل مقابل المصروفات</div>
+      </div>
+      <div style="display:flex; gap:24px; align-items:flex-end; height:160px; padding-bottom:24px;">
+        {% for m in data.finance.monthly_data %}
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="display:flex; gap:3px; align-items:flex-end; height:120px;">
+            <div class="mini-chart-bar income" data-height="{{ (m.income / 20000 * 100)|round }}" style="height:0;"></div>
+            <div class="mini-chart-bar expense" data-height="{{ (m.expenses / 20000 * 100)|round }}" style="height:0;"></div>
+          </div>
+          <div style="font-size:11px; color:var(--text-tertiary); font-weight:600;" data-ar="{{ m.month }}" data-en="{{ m.month_en }}">{{ m.month }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="display:flex; gap:16px; margin-top:8px; justify-content:center;">
+        <div style="display:flex; align-items:center; gap:6px;"><div style="width:12px; height:12px; border-radius:3px; background:var(--success-400);"></div><span style="font-size:12px; color:var(--text-tertiary);" data-i18n="income">الدخل</span></div>
+        <div style="display:flex; align-items:center; gap:6px;"><div style="width:12px; height:12px; border-radius:3px; background:var(--error-400);"></div><span style="font-size:12px; color:var(--text-tertiary);" data-i18n="expenses">المصروفات</span></div>
+      </div>
+    </div>
+
+    <!-- Budgets -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="الميزانيات" data-en="Budgets">الميزانيات</div>
+      </div>
+      {% for b in data.finance.budgets %}
+      <div class="mb-4">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="font-size:13px; font-weight:600;" data-ar="{{ b.category }}" data-en="{{ b.category_en }}">{{ b.category }}</span>
+          <span style="font-size:13px; color:var(--text-tertiary);">{{ b.spent }} / {{ b.budget }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-bar-fill {% if b.spent >= b.budget %}error{% elif b.spent >= b.budget * 0.8 %}warning{% else %}success{% endif %}" data-width="{{ (b.spent / b.budget * 100)|round }}"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Transactions -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" data-ar="آخر المعاملات" data-en="Recent Transactions">آخر المعاملات</div>
+    </div>
+    {% for tx in data.finance.transactions %}
+    <div class="tx-item">
+      <div class="tx-icon {{ tx.type }}">
+        {% if tx.type == 'income' %}↗{% else %}↘{% endif %}
+      </div>
+      <div class="tx-info">
+        <div class="tx-title" data-ar="{{ tx.title }}" data-en="{{ tx.title_en }}">{{ tx.title }}</div>
+        <div class="tx-cat" data-ar="{{ tx.category }}" data-en="{{ tx.category_en }}">{{ tx.category }} · {{ tx.date }}</div>
+      </div>
+      <div class="tx-amount {{ tx.type }}">{% if tx.type == 'income' %}+{% else %}-{% endif %}{{ tx.amount|abs|thousands_separator }} <span style="font-size:12px; font-weight:500;" data-ar="{{ data.finance.currency }}" data-en="{{ data.finance.currency_en }}">{{ data.finance.currency }}</span></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

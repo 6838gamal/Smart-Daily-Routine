@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <!-- Greeting -->
+  <div class="card mb-4" style="background: linear-gradient(135deg, var(--primary-500), var(--accent-500)); color:#fff; border:none;">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="font-size:14px; opacity:0.85; margin-bottom:4px;" data-ar="{{ data.dashboard.greeting }}" data-en="{{ data.dashboard.greeting_en }}">{{ data.dashboard.greeting }}</div>
+        <div style="font-size:24px; font-weight:700;" data-ar="{{ data.user.name }}" data-en="{{ data.user.name_en }}">{{ data.user.name }} 👋</div>
+        <div style="font-size:14px; opacity:0.85; margin-top:4px;" data-ar="{{ data.dashboard.date_label }}" data-en="{{ data.dashboard.date_label_en }}">{{ data.dashboard.date_label }}</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="progress-circle" style="color:#fff;">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="progress-circle-bg" cx="60" cy="60" r="52" style="stroke:rgba(255,255,255,0.2);"/>
+            <circle class="progress-circle-fg" cx="60" cy="60" r="52" data-pct="{{ data.dashboard.progress.goals_progress }}" style="stroke:#fff;"/>
+          </svg>
+          <div class="progress-circle-text" style="color:#fff;">
+            {{ data.dashboard.progress.goals_progress }}%
+            <div class="progress-circle-label" style="color:rgba(255,255,255,0.85);" data-i18n="today_progress">تقدم اليوم</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="grid grid-4 mb-4">
+    <div class="stat-card">
+      <div class="stat-icon primary">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="stat-label" data-i18n="tasks">المهام</div>
+      <div class="stat-value">{{ data.dashboard.progress.tasks_done }} / {{ data.dashboard.progress.tasks_total }}</div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.dashboard.progress.tasks_done / data.dashboard.progress.tasks_total * 100)|round }}"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon accent">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div class="stat-label" data-i18n="habits">العادات</div>
+      <div class="stat-value">{{ data.dashboard.progress.habits_done }} / {{ data.dashboard.progress.habits_total }}</div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.dashboard.progress.habits_done / data.dashboard.progress.habits_total * 100)|round }}"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div class="stat-label" data-i18n="goals_progress">تقدم الأهداف</div>
+      <div class="stat-value">{{ data.dashboard.progress.goals_progress }}%</div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill success" data-width="{{ data.dashboard.progress.goals_progress }}"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+      <div class="stat-label" data-i18n="weekly_overview">نظرة أسبوعية</div>
+      <div class="stat-value">{{ data.dashboard.weekly[1].progress }}%</div>
+      <div class="stat-sub" data-ar="إنجاز اليوم" data-en="Today's score">إنجاز اليوم</div>
+    </div>
+  </div>
+
+  <div class="grid grid-3 mb-4" style="grid-template-columns: 2fr 1fr;">
+    <!-- Today's Routine -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="today_routine">روتين اليوم</div>
+        <a href="/today" class="card-link" data-i18n="view_all">عرض الكل</a>
+      </div>
+      {% for item in data.dashboard.routine[:6] %}
+      <div class="task-item {% if item.done %}done{% endif %}">
+        <div class="task-check {% if item.done %}done{% endif %}"></div>
+        <div class="task-content">
+          <div class="task-title" data-ar="{{ item.title }}" data-en="{{ item.title_en }}">{{ item.title }}</div>
+        </div>
+        <div class="task-time">{{ item.time }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Tasks -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="tasks">المهام</div>
+        <a href="/today" class="card-link" data-i18n="view_all">عرض الكل</a>
+      </div>
+      {% for task in data.dashboard.tasks %}
+      <div class="task-item {% if task.done %}done{% endif %}">
+        <div class="task-check {% if task.done %}done{% endif %}"></div>
+        <div class="task-content">
+          <div class="task-title" data-ar="{{ task.title }}" data-en="{{ task.title_en }}">{{ task.title }}</div>
+          <div class="task-meta">
+            <span class="badge {% if task.priority == 'high' %}error{% elif task.priority == 'medium' %}warning{% else %}neutral{% endif %}">
+              {% if task.priority == 'high' %}{{ 'عاجل' if current_lang != 'en' else 'High' }}{% elif task.priority == 'medium' %}{{ 'متوسط' if current_lang != 'en' else 'Medium' }}{% else %}{{ 'منخفض' if current_lang != 'en' else 'Low' }}{% endif %}
+            </span>
+            <span class="task-time">{{ task.time }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="grid grid-3 mb-4" style="grid-template-columns: 1fr 1fr 1fr;">
+    <!-- Goals Progress -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="goals_progress">تقدم الأهداف</div>
+        <a href="/goals" class="card-link" data-i18n="view_all">عرض الكل</a>
+      </div>
+      {% for goal in data.dashboard.goals %}
+      <div class="mb-4">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span style="font-size:13px; font-weight:600;" data-ar="{{ goal.title }}" data-en="{{ goal.title_en }}">{{ goal.title }}</span>
+          <span style="font-size:13px; font-weight:700; color:var(--primary-500);">{{ goal.progress }}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" data-width="{{ goal.progress }}"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Habits -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="habits">العادات</div>
+        <a href="/habits" class="card-link" data-i18n="view_all">عرض الكل</a>
+      </div>
+      {% for habit in data.dashboard.habits %}
+      <div class="habit-row">
+        <div class="habit-icon" style="background:var(--primary-50); color:var(--primary-500);">
+          <span style="font-size:18px;">{% if habit.icon == 'sun' %}☀{% elif habit.icon == 'activity' %}⚡{% elif habit.icon == 'book' %}📖{% elif habit.icon == 'droplet' %}💧{% elif habit.icon == 'moon' %}🌙{% endif %}</span>
+        </div>
+        <div class="habit-info">
+          <div class="habit-name" data-ar="{{ habit.name }}" data-en="{{ habit.name_en }}">{{ habit.name }}</div>
+          <div class="habit-streak" data-ar="{{ habit.streak }} أيام متتالية" data-en="{{ habit.streak }} day streak">{{ habit.streak }} {{ 'أيام متتالية' if current_lang != 'en' else 'day streak' }}</div>
+        </div>
+        <div class="habit-toggle habit-dot {% if habit.done %}done{% endif %}"></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Weekly Overview -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="weekly_overview">نظرة أسبوعية</div>
+      </div>
+      <div class="weekly-chart">
+        {% for day in data.dashboard.weekly %}
+        <div class="weekly-bar-wrap">
+          <div class="weekly-bar {% if loop.index == 2 %}active{% endif %}" data-height="{{ day.progress }}" style="height:0;"></div>
+          <div class="weekly-bar-label" data-ar="{{ day.day }}" data-en="{{ day.day_en }}">{{ day.day[:2] }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" data-i18n="quick_actions">إجراءات سريعة</div>
+    </div>
+    <div class="grid grid-4">
+      <a href="/today" class="quick-action">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span data-i18n="add_task">مهمة جديدة</span>
+      </a>
+      <a href="/goals" class="quick-action">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>
+        <span data-i18n="add_goal">هدف جديد</span>
+      </a>
+      <a href="/habits" class="quick-action">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span data-i18n="add_habit">عادة جديدة</span>
+      </a>
+      <a href="/notes" class="quick-action">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span data-i18n="add_note">ملاحظة جديدة</span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

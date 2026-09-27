@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="nav_learning">التعلم</div>
+    <button class="btn btn-primary btn-sm" data-ar="إضافة دورة" data-en="Add Course">إضافة دورة</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-4 mb-4">
+    <div class="stat-card">
+      <div class="stat-icon primary"><span style="font-size:20px;">📚</span></div>
+      <div class="stat-label" data-ar="دورات نشطة" data-en="Active courses">دورات نشطة</div>
+      <div class="stat-value">{{ data.learning.courses|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon accent"><span style="font-size:20px;">📖</span></div>
+      <div class="stat-label" data-ar="كتب قيد القراءة" data-en="Books reading">كتب قيد القراءة</div>
+      <div class="stat-value">{{ data.learning.books|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><span style="font-size:20px;">⏱</span></div>
+      <div class="stat-label" data-ar="ساعات هذا الأسبوع" data-en="Hours this week">ساعات هذا الأسبوع</div>
+      <div class="stat-value">{{ ([s.duration for s in data.learning.study_sessions]|sum / 60)|round(1) }}h</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning"><span style="font-size:20px;">🎯</span></div>
+      <div class="stat-label" data-ar="مهارات" data-en="Skills">مهارات</div>
+      <div class="stat-value">{{ data.learning.skills|length }}</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-4" style="grid-template-columns: 1fr 1fr;">
+    <!-- Courses -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="الدورات" data-en="Courses">الدورات</div>
+      </div>
+      {% for c in data.learning.courses %}
+      <div class="mb-4">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:14px; font-weight:600;" data-ar="{{ c.title }}" data-en="{{ c.title_en }}">{{ c.title }}</span>
+          <span class="badge neutral">{{ c.platform }}</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-tertiary); margin-bottom:6px;" data-ar="{{ c.instructor }}" data-en="{{ c.instructor_en }}">{{ c.instructor }} · {{ c.lessons_done }}/{{ c.lessons_total }}</div>
+        <div class="progress-bar"><div class="progress-bar-fill" data-width="{{ c.progress }}"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Books -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="الكتب" data-en="Books">الكتب</div>
+      </div>
+      {% for b in data.learning.books %}
+      <div class="mb-4">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:14px; font-weight:600;" data-ar="{{ b.title }}" data-en="{{ b.title_en }}">{{ b.title }}</span>
+          <span style="font-size:12px; color:var(--text-tertiary);">{{ b.pages_done }}/{{ b.pages_total }}</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-tertiary); margin-bottom:6px;" data-ar="{{ b.author }}" data-en="{{ b.author_en }}">{{ b.author }}</div>
+        <div class="progress-bar"><div class="progress-bar-fill {% if b.progress == 100 %}success{% endif %}" data-width="{{ b.progress }}"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="grid-template-columns: 1fr 1fr;">
+    <!-- Skills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="المهارات" data-en="Skills">المهارات</div>
+      </div>
+      {% for s in data.learning.skills %}
+      <div class="skill-row">
+        <div class="skill-header">
+          <span class="skill-name" data-ar="{{ s.name }}" data-en="{{ s.name_en }}">{{ s.name }}</span>
+          <span class="skill-level">{{ s.level }}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" data-width="{{ s.level }}"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Study sessions -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="جلسات الدراسة" data-en="Study Sessions">جلسات الدراسة</div>
+      </div>
+      <div class="weekly-chart">
+        {% for s in data.learning.study_sessions %}
+        <div class="weekly-bar-wrap">
+          <div class="weekly-bar" data-height="{{ (s.duration / 120 * 100)|round }}" style="height:0;"></div>
+          <div class="weekly-bar-label">{{ loop.index }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% for s in data.learning.study_sessions[-3:] %}
+      <div class="task-item">
+        <div class="timeline-marker primary" style="width:32px;height:32px;"><span style="font-size:14px;">⏱</span></div>
+        <div class="task-content">
+          <div class="task-title" data-ar="{{ s.topic }}" data-en="{{ s.topic_en }}">{{ s.topic }}</div>
+          <div class="task-time">{{ s.date }} · {{ s.duration }} {{ 'دقيقة' if current_lang != 'en' else 'min' }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

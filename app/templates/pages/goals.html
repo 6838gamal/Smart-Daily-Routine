@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="goals_progress">الأهداف</div>
+    <button class="btn btn-primary btn-sm" data-i18n="add_goal">هدف جديد</button>
+  </div>
+
+  <div class="grid grid-2">
+    {% for goal in data.goals %}
+    <div class="card">
+      <div class="flex justify-between items-center mb-2">
+        <div class="card-title" data-ar="{{ goal.title }}" data-en="{{ goal.title_en }}">{{ goal.title }}</div>
+        <span class="badge primary" data-ar="{{ goal.category }}" data-en="{{ goal.category_en }}">{{ goal.category }}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px; margin-top:12px;">
+        <div class="progress-circle" style="width:80px; height:80px;">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle class="progress-circle-bg" cx="40" cy="40" r="34"/>
+            <circle class="progress-circle-fg" cx="40" cy="40" r="34" data-pct="{{ goal.progress }}"/>
+          </svg>
+          <div class="progress-circle-text" style="font-size:16px;">{{ goal.progress }}%</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px; color:var(--text-tertiary); margin-bottom:4px;" data-i18n="deadline">الموعد النهائي</div>
+          <div style="font-size:14px; font-weight:600; margin-bottom:8px;">{{ goal.deadline }}</div>
+          <div style="font-size:13px; color:var(--text-tertiary); margin-bottom:4px;" data-i18n="milestones">المراحل</div>
+          <div>
+            {% for ms in goal.milestones %}
+            <div class="milestone {% if ms.done %}done{% endif %}">
+              <div class="milestone-check {% if ms.done %}done{% endif %}"></div>
+              <div class="milestone-title" data-ar="{{ ms.title }}" data-en="{{ ms.title_en }}">{{ ms.title }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

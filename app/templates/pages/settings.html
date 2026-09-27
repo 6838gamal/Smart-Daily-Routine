@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="section-title mb-4" data-i18n="page_settings">الإعدادات</div>
+
+  <div class="grid grid-2" style="grid-template-columns: 1fr 1fr;">
+    <!-- Profile -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="profile">الملف الشخصي</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <div class="user-avatar" style="width:64px; height:64px; font-size:24px;">{{ data.settings.profile.avatar if data.settings.profile.avatar else data.user.avatar }}</div>
+        <div>
+          <div style="font-size:18px; font-weight:700;" data-ar="{{ data.settings.profile.name }}" data-en="{{ data.settings.profile.name_en }}">{{ data.settings.profile.name }}</div>
+          <div style="font-size:14px; color:var(--text-tertiary);">{{ data.settings.profile.email }}</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="profile">الاسم</label>
+        <input class="form-input" type="text" value="{{ data.settings.profile.name }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label>
+        <input class="form-input" type="email" value="{{ data.settings.profile.email }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="الهاتف" data-en="Phone">الهاتف</label>
+        <input class="form-input" type="tel" value="{{ data.settings.profile.phone }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="المنطقة الزمنية" data-en="Timezone">المنطقة الزمنية</label>
+        <input class="form-input" type="text" value="{{ data.settings.profile.timezone }}">
+      </div>
+      <button class="btn btn-primary" data-i18n="save">حفظ</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <!-- Appearance -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" data-i18n="appearance">المظهر</div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-i18n="dark_mode">داكن</div>
+            <div class="setting-desc" data-ar="الوضع الداكن" data-en="Dark mode">الوضع الداكن</div>
+          </div>
+          <div class="toggle-switch" id="darkToggle"></div>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" data-i18n="language">اللغة</div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-i18n="arabic">العربية</div>
+            <div class="setting-desc" data-ar="اللغة الافتراضية" data-en="Default language">اللغة الافتراضية</div>
+          </div>
+          <select class="form-select" style="width:auto;" id="langSelect">
+            <option value="ar" {% if current_lang != 'en' %}selected{% endif %} data-ar="العربية" data-en="Arabic">العربية</option>
+            <option value="en" {% if current_lang == 'en' %}selected{% endif %} data-ar="الإنجليزية" data-en="English">English</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" data-i18n="preferences">التفضيلات</div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-ar="الإشعارات" data-en="Notifications">الإشعارات</div>
+            <div class="setting-desc" data-ar="تنبيهات للمهام والعادات" data-en="Task and habit alerts">تنبيهات للمهام والعادات</div>
+          </div>
+          <div class="toggle-switch active"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-ar="مراجعة يومية" data-en="Daily review">مراجعة يومية</div>
+            <div class="setting-desc" data-ar="تذكير بمراجعة اليوم" data-en="Daily review reminder">تذكير بمراجعة اليوم</div>
+          </div>
+          <div class="toggle-switch active"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-ar="بداية الأسبوع" data-en="Week starts">بداية الأسبوع</div>
+          </div>
+          <select class="form-select" style="width:auto;">
+            <option data-ar="السبت" data-en="Saturday">السبت</option>
+            <option data-ar="الأحد" data-en="Sunday">الأحد</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-ar="صيغة الوقت" data-en="Time format">صيغة الوقت</div>
+          </div>
+          <select class="form-select" style="width:auto;">
+            <option data-ar="١٢ ساعة" data-en="12-hour">١٢ ساعة</option>
+            <option data-ar="٢٤ ساعة" data-en="24-hour">٢٤ ساعة</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

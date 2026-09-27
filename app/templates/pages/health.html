@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="nav_health">الصحة</div>
+    <button class="btn btn-primary btn-sm" data-ar="تسجيل اليوم" data-en="Log Today">تسجيل اليوم</button>
+  </div>
+
+  <!-- Health stats -->
+  <div class="grid grid-4 mb-4">
+    <div class="stat-card">
+      <div class="stat-icon primary"><span style="font-size:20px;">😴</span></div>
+      <div class="stat-label" data-ar="النوم" data-en="Sleep">النوم</div>
+      <div class="stat-value">{{ data.health.sleep.value }} <span style="font-size:14px; color:var(--text-tertiary);" data-ar="{{ data.health.sleep.unit }}" data-en="{{ data.health.sleep.unit_en }}">{{ data.health.sleep.unit }}</span></div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.health.sleep.value / data.health.sleep.goal * 100)|round }}"></div></div>
+      <div class="stat-sub" data-ar="الهدف: {{ data.health.sleep.goal }} ساعة" data-en="Goal: {{ data.health.sleep.goal }} hrs">الهدف: {{ data.health.sleep.goal }} ساعة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon accent"><span style="font-size:20px;">💧</span></div>
+      <div class="stat-label" data-ar="الماء" data-en="Water">الماء</div>
+      <div class="stat-value">{{ data.health.water.value }} <span style="font-size:14px; color:var(--text-tertiary);" data-ar="{{ data.health.water.unit }}" data-en="{{ data.health.water.unit_en }}">{{ data.health.water.unit }}</span></div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.health.water.value / data.health.water.goal * 100)|round }}"></div></div>
+      <div class="stat-sub" data-ar="الهدف: {{ data.health.water.goal }} أكواب" data-en="Goal: {{ data.health.water.goal }} cups">الهدف: {{ data.health.water.goal }} أكواب</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><span style="font-size:20px;">⚡</span></div>
+      <div class="stat-label" data-ar="التمرين" data-en="Exercise">التمرين</div>
+      <div class="stat-value">{{ data.health.exercise.value }} <span style="font-size:14px; color:var(--text-tertiary);" data-ar="{{ data.health.exercise.unit }}" data-en="{{ data.health.exercise.unit_en }}">{{ data.health.exercise.unit }}</span></div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (data.health.exercise.value / data.health.exercise.goal * 100)|round }}"></div></div>
+      <div class="stat-sub" data-ar="الهدف: {{ data.health.exercise.goal }} دقيقة" data-en="Goal: {{ data.health.exercise.goal }} min">الهدف: {{ data.health.exercise.goal }} دقيقة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning"><span style="font-size:20px;">⚖</span></div>
+      <div class="stat-label" data-ar="الوزن" data-en="Weight">الوزن</div>
+      <div class="stat-value">{{ data.health.weight.value }} <span style="font-size:14px; color:var(--text-tertiary);" data-ar="{{ data.health.weight.unit }}" data-en="{{ data.health.weight.unit_en }}">{{ data.health.weight.unit }}</span></div>
+      <div class="progress-bar mt-2"><div class="progress-bar-fill" data-width="{{ (75 / data.health.weight.value * 100)|round }}"></div></div>
+      <div class="stat-sub" data-ar="الهدف: {{ data.health.weight.goal }} كجم" data-en="Goal: {{ data.health.weight.goal }} kg">الهدف: {{ data.health.weight.goal }} كجم</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-4" style="grid-template-columns: 1fr 1fr;">
+    <!-- Weekly charts -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="النوم الأسبوعي" data-en="Weekly Sleep">النوم الأسبوعي</div>
+      </div>
+      <div class="weekly-chart">
+        {% for v in data.health.sleep.weekly %}
+        <div class="weekly-bar-wrap">
+          <div class="weekly-bar" data-height="{{ (v / 10 * 100)|round }}" style="height:0;"></div>
+          <div class="weekly-bar-label">{{ loop.index }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-ar="الماء الأسبوعي" data-en="Weekly Water">الماء الأسبوعي</div>
+      </div>
+      <div class="weekly-chart">
+        {% for v in data.health.water.weekly %}
+        <div class="weekly-bar-wrap">
+          <div class="weekly-bar" data-height="{{ (v / 8 * 100)|round }}" style="height:0;"></div>
+          <div class="weekly-bar-label">{{ loop.index }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Mood -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" data-ar="المزاج اليوم" data-en="Today's Mood">المزاج اليوم</div>
+    </div>
+    <div class="mood-options">
+      {% for m in data.health.mood_options %}
+      <div class="mood-option {% if m.value == 'good' %}selected{% endif %}">
+        <div class="mood-emoji">{{ m.emoji }}</div>
+        <div class="mood-label" data-ar="{{ m.label }}" data-en="{{ m.label_en }}">{{ m.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:16px;">
+      <div style="font-size:13px; color:var(--text-tertiary); margin-bottom:8px;" data-ar="مزاج الأسبوع" data-en="Weekly mood">مزاج الأسبوع</div>
+      <div style="display:flex; gap:8px;">
+        {% for m in data.health.mood.weekly %}
+        {% for opt in data.health.mood_options if opt.value == m %}
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex:1;">
+          <div style="font-size:22px;">{{ opt.emoji }}</div>
+          <div style="font-size:11px; color:var(--text-tertiary);">{{ loop.index }}</div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

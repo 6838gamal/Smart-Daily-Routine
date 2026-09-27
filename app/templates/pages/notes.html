@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="nav_notes">الملاحظات</div>
+    <button class="btn btn-primary btn-sm" data-i18n="add_note">ملاحظة جديدة</button>
+  </div>
+
+  <!-- Categories -->
+  <div class="flex gap-2 mb-4" style="flex-wrap:wrap;">
+    {% for cat in data.note_categories %}
+    <button class="btn btn-ghost btn-sm note-cat-btn {% if loop.first %}active{% endif %}" data-cat="{{ cat.name_en|lower }}" style="{% if loop.first %}background:var(--primary-50); color:var(--primary-500); border-color:var(--primary-200);{% endif %}">
+      <span data-ar="{{ cat.name }}" data-en="{{ cat.name_en }}">{{ cat.name }}</span>
+      <span style="opacity:0.6;">({{ cat.count }})</span>
+    </button>
+    {% endfor %}
+  </div>
+
+  <!-- Notes grid -->
+  <div class="grid grid-auto">
+    {% for note in data.notes %}
+    <div class="note-card {% if note.pinned %}pinned{% endif %}" data-cat="{{ note.category_en|lower }}">
+      <div class="flex justify-between items-center mb-2">
+        <div class="note-title" data-ar="{{ note.title }}" data-en="{{ note.title_en }}">{{ note.title }}</div>
+        {% if note.pinned %}<span style="font-size:16px;">📌</span>{% endif %}
+      </div>
+      <div class="note-content" data-ar="{{ note.content }}" data-en="{{ note.content_en }}">{{ note.content }}</div>
+      <div class="note-footer">
+        <span class="badge neutral" data-ar="{{ note.category }}" data-en="{{ note.category_en }}">{{ note.category }}</span>
+        <span class="note-date">{{ note.date }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

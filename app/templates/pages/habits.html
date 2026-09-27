@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="flex justify-between items-center mb-4">
+    <div class="section-title" data-i18n="habits">العادات</div>
+    <button class="btn btn-primary btn-sm" data-i18n="add_habit">عادة جديدة</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-4 mb-4">
+    <div class="stat-card">
+      <div class="stat-icon primary"><span style="font-size:20px;">🔥</span></div>
+      <div class="stat-label" data-ar="أطول سلسلة" data-en="Best streak">أطول سلسلة</div>
+      <div class="stat-value">45 {{ 'يوم' if current_lang != 'en' else 'days' }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><span style="font-size:20px;">✓</span></div>
+      <div class="stat-label" data-ar="مكتمل اليوم" data-en="Completed today">مكتمل اليوم</div>
+      <div class="stat-value">3 / {{ data.habits|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon accent"><span style="font-size:20px;">📊</span></div>
+      <div class="stat-label" data-ar="متوسط الأسبوع" data-en="Weekly avg">متوسط الأسبوع</div>
+      <div class="stat-value">79%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning"><span style="font-size:20px;">🎯</span></div>
+      <div class="stat-label" data-ar="إجمالي العادات" data-en="Total habits">إجمالي العادات</div>
+      <div class="stat-value">{{ data.habits|length }}</div>
+    </div>
+  </div>
+
+  <!-- Habits list -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" data-ar="عاداتي" data-en="My Habits">عاداتي</div>
+    </div>
+    {% for habit in data.habits %}
+    <div class="habit-row">
+      <div class="habit-icon" style="background:var(--primary-50); color:var(--primary-500); width:44px; height:44px;">
+        <span style="font-size:20px;">{% if habit.icon == 'sun' %}☀{% elif habit.icon == 'activity' %}⚡{% elif habit.icon == 'book' %}📖{% elif habit.icon == 'droplet' %}💧{% elif habit.icon == 'moon' %}🌙{% elif habit.icon == 'edit' %}✏{% endif %}</span>
+      </div>
+      <div class="habit-info">
+        <div class="habit-name" data-ar="{{ habit.name }}" data-en="{{ habit.name_en }}">{{ habit.name }}</div>
+        <div class="habit-streak">🔥 {{ habit.streak }} {{ 'أيام' if current_lang != 'en' else 'days' }} · {{ 'أفضل' if current_lang != 'en' else 'Best' }} {{ habit.best_streak }}</div>
+      </div>
+      <div class="habit-week">
+        {% for d in habit.weekly %}
+        <div class="habit-dot habit-toggle {% if d %}done{% endif %}">{{ loop.index }}</div>
+        {% endfor %}
+      </div>
+      <div style="text-align:center; min-width:60px;">
+        <div style="font-size:18px; font-weight:700; color:var(--primary-500);">{{ habit.weekly_progress }}%</div>
+        <div style="font-size:11px; color:var(--text-tertiary);" data-i18n="progress">التقدم</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

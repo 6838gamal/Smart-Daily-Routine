@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="fade-in">
+  <div class="card mb-4" style="background: linear-gradient(135deg, var(--primary-500), var(--accent-500)); color:#fff; border:none;">
+    <div style="font-size:14px; opacity:0.85;" data-ar="{{ data.dashboard.date_label }}" data-en="{{ data.dashboard.date_label_en }}">{{ data.dashboard.date_label }}</div>
+    <div style="font-size:22px; font-weight:700; margin-top:4px;" data-ar="خط زمني لليوم" data-en="Today's Timeline">خط زمني لليوم</div>
+    <div style="display:flex; gap:16px; margin-top:12px;">
+      <div><span style="font-size:24px; font-weight:700;">{{ data.dashboard.progress.tasks_done }}</span> <span style="opacity:0.8; font-size:13px;" data-ar="مهام مكتملة" data-en="tasks done">مهام مكتملة</span></div>
+      <div><span style="font-size:24px; font-weight:700;">{{ data.dashboard.progress.habits_done }}</span> <span style="opacity:0.8; font-size:13px;" data-ar="عادات مكتملة" data-en="habits done">عادات مكتملة</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" data-ar="جدول اليوم" data-en="Today's Schedule">جدول اليوم</div>
+    </div>
+    <div class="timeline">
+      {% for item in data.today_timeline %}
+      <div class="timeline-item {% if item.done %}done{% endif %}">
+        <div class="timeline-time">{{ item.time }}</div>
+        <div class="timeline-marker {% if item.type == 'routine' %}primary{% elif item.type == 'habit' %}success{% elif item.type == 'event' %}accent{% elif item.type == 'task' %}warning{% else %}neutral{% endif %}">
+          {% if item.icon == 'sun' %}☀{% elif item.icon == 'activity' %}⚡{% elif item.icon == 'book' %}📖{% elif item.icon == 'briefcase' %}💼{% elif item.icon == 'coffee' %}☕{% elif item.icon == 'users' %}👥{% elif item.icon == 'mail' %}✉{% elif item.icon == 'droplet' %}💧{% elif item.icon == 'moon' %}🌙{% elif item.icon == 'graduation' %}🎓{% endif %}
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title" data-ar="{{ item.title }}" data-en="{{ item.title_en }}">{{ item.title }}</div>
+          <div class="timeline-type">
+            {% if item.type == 'routine' %}<span class="badge primary" data-ar="روتين" data-en="Routine">روتين</span>{% elif item.type == 'habit' %}<span class="badge success" data-ar="عادة" data-en="Habit">عادة</span>{% elif item.type == 'task' %}<span class="badge warning" data-ar="مهمة" data-en="Task">مهمة</span>{% elif item.type == 'event' %}<span class="badge accent" data-ar="حدث" data-en="Event">حدث</span>{% endif %}
+            {% if item.done %}<span class="badge success" data-ar="مكتمل" data-en="Done">مكتمل</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
